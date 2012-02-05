@@ -7,14 +7,30 @@
 """
 
 
-from gi.repository import Nautilus, GObject, Gtk, GdkPixbuf
-import urllib, os, subprocess
+#   open-terminal-geometry.py version 1.2.2
+#
+#   Copyright 2009-2011 Giuseppe Penone <giuspen@gmail.com>
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#   MA 02110-1301, USA.
+
+import nautilus, urllib, os, subprocess
 import locale, gettext
 
 APP_NAME = "nautilus-pyextensions"
 LOCALE_PATH = "/usr/share/locale/"
-ICONPATH = "/usr/share/icons/gnome/48x48/apps/terminal.png"
-
 # internationalization
 locale.setlocale(locale.LC_ALL, '')
 gettext.bindtextdomain(APP_NAME, LOCALE_PATH)
@@ -23,18 +39,13 @@ _ = gettext.gettext
 # post internationalization code starts here
 
 
-class OpenTerminalGeometry(GObject.GObject, Nautilus.MenuProvider):
-    """Implements the 'Open Guake here' extension to the nautilus right-click menu"""
+
+class OpenTerminalGeometry(nautilus.MenuProvider):
+    """Implements the 'Open Guake' extension to the nautilus right-click menu"""
 
     def __init__(self):
         """Nautilus crashes if a plugin doesn't implement the __init__ method"""
-        try:
-            factory = Gtk.IconFactory()
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file(ICONPATH)
-            iconset = Gtk.IconSet.new_from_pixbuf(pixbuf)
-            factory.add("terminal", iconset)
-            factory.add_default()
-        except: pass
+        pass
 
     def run(self, menu, selected):
         """Runs the Open Guake here on the given Directory"""
@@ -54,14 +65,14 @@ class OpenTerminalGeometry(GObject.GObject, Nautilus.MenuProvider):
                                  tip=_('Open the Guake terminal on the Current/Selected Directory'),
                                  icon='terminal')
         item.connect('activate', self.run, sel_items[0])
-        return [item]
+        return item,
 
     def get_background_items(self, window, current_directory):
         """Adds the 'Open Guake here' menu item to the Nautilus right-click menu,
            connects its 'activate' signal to the 'run' method passing the current Directory"""
-        item = Nautilus.MenuItem(name='NautilusPython::guake',
-                                 label=_('Open Guake Here'),
-                                 tip=_('Open the Guake terminal on the Current Directory'),
-                                 icon='terminal')
+        item = nautilus.MenuItem('NautilusPython::guake',
+                                 _('Open Guake Here'),
+                                 _('Open the Guake on the Current Directory') )
+        item.set_property('icon', 'terminal')
         item.connect('activate', self.run, current_directory)
-        return [item]
+        return item,

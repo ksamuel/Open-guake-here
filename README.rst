@@ -5,6 +5,8 @@ A Nautilus_ `Python extension`_ adding a entry in the right click menu to open t
 
 When clicked, Guake get the focus, creates a new tab and set the current directory to the directory you where in Nautilus.
 
+The master branch is for nautilus 3. There is another branch for nautilus 2.
+
 GPL2 licence. Enjoy.
 
 How to install
